@@ -1,7 +1,6 @@
 library('ProjectTemplate')
 load.project()
 
-summary(datos)
-head(datos)
+summary(dat)
+head(dat)
 
-df <- ddply(datos, c("medicion", "estacion", "FECHA"), summarise, promedio = mean(value), .progress = "text")
