@@ -243,18 +243,38 @@ dat.m
 ## 25 04/03/2005   19     VVSAG_.m.s.  -9.9
 </code></pre>
 
-<p>Lo que ahora interesa es la columna &ldquo;<em>variable</em>&rdquo;, cada nombre dice la medicion que se evalúa, la estación donde se evalúa y las unidades de la medición. En este caso los 5 valores de la columna &ldquo;<em>variable</em>&rdquo; son los siguientes.</p>
+<p>Lo que ahora interesa es la columna &ldquo;<em>variable</em>&rdquo;, cada nombre dice la medicion que se evalúa, la estación donde se evalúa y las unidades de la medición. En este caso los valores de la columna &ldquo;<em>variable</em>&rdquo; son los siguientes.</p>
 
 <!-- html table generated in R 2.15.1 by xtable 1.7-0 package -->
 
-<!-- Tue Aug 28 11:41:54 2012 -->
+<!-- Tue Aug 28 19:01:40 2012 -->
 
 <TABLE align = 'center'>
 <TR> <TH> codigos </TH>  </TR>
   <TR> <TD align="center"> NOXUIZ_.ppb. </TD> </TR>
+  <TR> <TD align="center"> NOXUIZ_.ppb. </TD> </TR>
+  <TR> <TD align="center"> NOXUIZ_.ppb. </TD> </TR>
+  <TR> <TD align="center"> NOXUIZ_.ppb. </TD> </TR>
+  <TR> <TD align="center"> NOXUIZ_.ppb. </TD> </TR>
+  <TR> <TD align="center"> PM25UIZ_.µg.m3. </TD> </TR>
+  <TR> <TD align="center"> PM25UIZ_.µg.m3. </TD> </TR>
+  <TR> <TD align="center"> PM25UIZ_.µg.m3. </TD> </TR>
+  <TR> <TD align="center"> PM25UIZ_.µg.m3. </TD> </TR>
   <TR> <TD align="center"> PM25UIZ_.µg.m3. </TD> </TR>
   <TR> <TD align="center"> SO2PED_.ppb. </TD> </TR>
+  <TR> <TD align="center"> SO2PED_.ppb. </TD> </TR>
+  <TR> <TD align="center"> SO2PED_.ppb. </TD> </TR>
+  <TR> <TD align="center"> SO2PED_.ppb. </TD> </TR>
+  <TR> <TD align="center"> SO2PED_.ppb. </TD> </TR>
   <TR> <TD align="center"> VVPED_.m.s. </TD> </TR>
+  <TR> <TD align="center"> VVPED_.m.s. </TD> </TR>
+  <TR> <TD align="center"> VVPED_.m.s. </TD> </TR>
+  <TR> <TD align="center"> VVPED_.m.s. </TD> </TR>
+  <TR> <TD align="center"> VVPED_.m.s. </TD> </TR>
+  <TR> <TD align="center"> VVSAG_.m.s. </TD> </TR>
+  <TR> <TD align="center"> VVSAG_.m.s. </TD> </TR>
+  <TR> <TD align="center"> VVSAG_.m.s. </TD> </TR>
+  <TR> <TD align="center"> VVSAG_.m.s. </TD> </TR>
   <TR> <TD align="center"> VVSAG_.m.s. </TD> </TR>
    </TABLE>
 
@@ -265,7 +285,7 @@ dat.m
 <p>Con la librería <strong><code>stringr</code></strong> se manipulan los códigos para separarlos en las tres variables que interesan. </p>
 
 <pre><code class="r">library(stringr)
-codigos &lt;- unique(as.character(dat.m$variable))
+codigos &lt;- as.character(dat.m$variable)
 </code></pre>
 
 <ul>
@@ -278,12 +298,32 @@ codigos &lt;- unique(as.character(dat.m$variable))
 codigos.sep
 </code></pre>
 
-<pre><code>##      [,1]      [,2]     
-## [1,] &quot;NOXUIZ&quot;  &quot;.ppb.&quot;  
-## [2,] &quot;PM25UIZ&quot; &quot;.µg.m3.&quot;
-## [3,] &quot;SO2PED&quot;  &quot;.ppb.&quot;  
-## [4,] &quot;VVPED&quot;   &quot;.m.s.&quot;  
-## [5,] &quot;VVSAG&quot;   &quot;.m.s.&quot;  
+<pre><code>##       [,1]      [,2]     
+##  [1,] &quot;NOXUIZ&quot;  &quot;.ppb.&quot;  
+##  [2,] &quot;NOXUIZ&quot;  &quot;.ppb.&quot;  
+##  [3,] &quot;NOXUIZ&quot;  &quot;.ppb.&quot;  
+##  [4,] &quot;NOXUIZ&quot;  &quot;.ppb.&quot;  
+##  [5,] &quot;NOXUIZ&quot;  &quot;.ppb.&quot;  
+##  [6,] &quot;PM25UIZ&quot; &quot;.µg.m3.&quot;
+##  [7,] &quot;PM25UIZ&quot; &quot;.µg.m3.&quot;
+##  [8,] &quot;PM25UIZ&quot; &quot;.µg.m3.&quot;
+##  [9,] &quot;PM25UIZ&quot; &quot;.µg.m3.&quot;
+## [10,] &quot;PM25UIZ&quot; &quot;.µg.m3.&quot;
+## [11,] &quot;SO2PED&quot;  &quot;.ppb.&quot;  
+## [12,] &quot;SO2PED&quot;  &quot;.ppb.&quot;  
+## [13,] &quot;SO2PED&quot;  &quot;.ppb.&quot;  
+## [14,] &quot;SO2PED&quot;  &quot;.ppb.&quot;  
+## [15,] &quot;SO2PED&quot;  &quot;.ppb.&quot;  
+## [16,] &quot;VVPED&quot;   &quot;.m.s.&quot;  
+## [17,] &quot;VVPED&quot;   &quot;.m.s.&quot;  
+## [18,] &quot;VVPED&quot;   &quot;.m.s.&quot;  
+## [19,] &quot;VVPED&quot;   &quot;.m.s.&quot;  
+## [20,] &quot;VVPED&quot;   &quot;.m.s.&quot;  
+## [21,] &quot;VVSAG&quot;   &quot;.m.s.&quot;  
+## [22,] &quot;VVSAG&quot;   &quot;.m.s.&quot;  
+## [23,] &quot;VVSAG&quot;   &quot;.m.s.&quot;  
+## [24,] &quot;VVSAG&quot;   &quot;.m.s.&quot;  
+## [25,] &quot;VVSAG&quot;   &quot;.m.s.&quot;  
 </code></pre>
 
 <p>De la matríz que se obtiene sólo se extrae la segunda columna.</p>
@@ -309,17 +349,39 @@ codigos.sep
 
 <p>Se crea un <strong>data.frame</strong> con las variables <em>estacion</em>, <em>medicion</em> y <em>unidades</em>. </p>
 
-<pre><code class="r">temp &lt;- data.frame(variable = codigos, estacion = estacion, medicion = medicion, 
-    unidades = unidades)
+<pre><code class="r">temp &lt;- data.frame(#variable = codigos,
+  estacion = estacion,
+  medicion = medicion,
+  unidades = unidades )
 temp
 </code></pre>
 
-<pre><code>##          variable estacion medicion unidades
-## 1    NOXUIZ_.ppb.      UIZ      NOX    .ppb.
-## 2 PM25UIZ_.µg.m3.      UIZ     PM25  .µg.m3.
-## 3    SO2PED_.ppb.      PED      SO2    .ppb.
-## 4     VVPED_.m.s.      PED       VV    .m.s.
-## 5     VVSAG_.m.s.      SAG       VV    .m.s.
+<pre><code>##    estacion medicion unidades
+## 1       UIZ      NOX    .ppb.
+## 2       UIZ      NOX    .ppb.
+## 3       UIZ      NOX    .ppb.
+## 4       UIZ      NOX    .ppb.
+## 5       UIZ      NOX    .ppb.
+## 6       UIZ     PM25  .µg.m3.
+## 7       UIZ     PM25  .µg.m3.
+## 8       UIZ     PM25  .µg.m3.
+## 9       UIZ     PM25  .µg.m3.
+## 10      UIZ     PM25  .µg.m3.
+## 11      PED      SO2    .ppb.
+## 12      PED      SO2    .ppb.
+## 13      PED      SO2    .ppb.
+## 14      PED      SO2    .ppb.
+## 15      PED      SO2    .ppb.
+## 16      PED       VV    .m.s.
+## 17      PED       VV    .m.s.
+## 18      PED       VV    .m.s.
+## 19      PED       VV    .m.s.
+## 20      PED       VV    .m.s.
+## 21      SAG       VV    .m.s.
+## 22      SAG       VV    .m.s.
+## 23      SAG       VV    .m.s.
+## 24      SAG       VV    .m.s.
+## 25      SAG       VV    .m.s.
 </code></pre>
 
 <hr/>
@@ -330,7 +392,7 @@ temp
 En este caso a la base vertical (<em>dat.m</em>) le agrega las columnas de la base con las nuevas variables (<em>temp</em>) usando la columna común (<em>variable</em>) y sólo hay que especificar el tipo de union, el default es por la izquierda, es decir, para todos los valores de <em>dat.m</em> agrega la columna.</p>
 
 <pre><code class="r">library(plyr)
-dat.j &lt;- join(dat.m, temp)
+dat.j &lt;- cbind(dat.m, temp)
 dat.j
 </code></pre>
 
@@ -397,13 +459,11 @@ head(dat.j)
 
 <hr/>
 
-<h2><code>Libraries</code></h2>
-
-<hr/>
-
 <h2>Referencias</h2>
 
 <ol>
+<li>Myles, John. <em>Project Template</em>.
+URL <a href="http://www.johnmyleswhite.com/notebook/2010/08/26/projecttemplate/">http://www.johnmyleswhite.com/notebook/2010/08/26/projecttemplate/</a></li>
 <li>Grolemund G, Wickham H. <em>Dates and Times Made Easy with lubridate</em>. Rice University.
 URL <a href="http://www.jstatsoft.org/v40/i01/paper">http://www.jstatsoft.org/v40/i01/paper</a>.</li>
 <li>Wickham, Hadley. <em>The Split-Apply-Combine Strategy for Data Analysis</em>.

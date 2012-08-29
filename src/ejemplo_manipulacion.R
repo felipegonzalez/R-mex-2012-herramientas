@@ -17,10 +17,10 @@ library(reshape2)
 dat.m <- melt(dat, id.vars = c("FECHA", "HORA"))
 dat.m
 
-#' Lo que ahora interesa es la columna "_variable_", cada nombre dice la medicion que se evalúa, la estación donde se evalúa y las unidades de la medición. En este caso los 5 valores de la columna "_variable_" son los siguientes.
+#' Lo que ahora interesa es la columna "_variable_", cada nombre dice la medicion que se evalúa, la estación donde se evalúa y las unidades de la medición. En este caso los valores de la columna "_variable_" son los siguientes.
 #+ tablecodigos, results='asis', echo = F
 library(xtable)
-codigos <- unique( as.character(dat.m$variable) )
+codigos <- as.character(dat.m$variable)
 tab.df <- data.frame(codigos)
 tab <- xtable(tab.df, align = "cc")
 print(tab, type="html", html.table.attributes = "align = 'center'", include.rownames=FALSE)
@@ -32,7 +32,7 @@ print(tab, type="html", html.table.attributes = "align = 'center'", include.rown
 #' ## Creación de variables
 #' Con la librería **`stringr`** se manipulan los códigos para separarlos en las tres variables que interesan. 
 library(stringr)
-codigos <- unique( as.character(dat.m$variable) )
+codigos <- as.character(dat.m$variable)
 
 #' * **str_split_fixed** 
 #' 
@@ -52,23 +52,18 @@ estacion <- str_sub(codigos.sep[, 1], start = -3, end = -1)
 #' Como ninguna cadena del vector tiene más de 10 posiciones se indica este y tomar las posiciones restantes y en caso de no haber simplemente lo omite 
 medicion <- str_sub(codigos.sep[ ,1], start = -10, end = -4)
 
+#' ****
+#' 
+#' ## Construcción de base
 #' Se crea un **data.frame** con las variables _estacion_, _medicion_ y _unidades_. 
-temp <- data.frame(variable = codigos,
-  estacion = estacion,
+temp <- data.frame(estacion = estacion,
   medicion = medicion,
   unidades = unidades )
 temp
 
-
-
-#' ****
-#' 
-#' ## Construcción de base
-#' Para construir la base se agregan las variables construídas a la base de datos con la función **join** del paquete **`plyr`** que une dos data frames. 
-#' En este caso a la base vertical (_dat.m_) le agrega las columnas de la base con las nuevas variables (_temp_) usando la columna común (_variable_) y sólo hay que especificar el tipo de union, el default es por la izquierda, es decir, para todos los valores de _dat.m_ agrega la columna.
-#+ joinfunction, message=FALSE
-library(plyr)
-dat.j <- join(dat.m, temp)
+#' Se agregan 
+#+ cbindfunction, message=FALSE
+dat.j <- cbind(dat.m, temp)
 dat.j
 
 
@@ -94,9 +89,9 @@ head(dat.j)
 #' - - - -
 #' 
 #' ## Referencias
-#' 1. Grolemund G, Wickham H. *Dates and Times Made Easy with lubridate*. Rice University.
+#' 1. Myles, John. *Project Template*.
+#' URL [http://www.johnmyleswhite.com/notebook/2010/08/26/projecttemplate/](http://www.johnmyleswhite.com/notebook/2010/08/26/projecttemplate/)
+#' 2. Grolemund G, Wickham H. *Dates and Times Made Easy with lubridate*. Rice University.
 #' URL [http://www.jstatsoft.org/v40/i01/paper](http://www.jstatsoft.org/v40/i01/paper).
-#' 2. Wickham, Hadley. *The Split-Apply-Combine Strategy for Data Analysis*.
-#' URL [http://www.jstatsoft.org/v40/i03/paper](http://www.jstatsoft.org/v40/i03/paper) 
 #' 3. Wickham, Hadley. *stringr: modern, consistent string processing*.
 #' URL [http://journal.r-project.org/archive/2010-2/RJournal_2010-2_Wickham.pdf](http://journal.r-project.org/archive/2010-2/RJournal_2010-2_Wickham.pdf)

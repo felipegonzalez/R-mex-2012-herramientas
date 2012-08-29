@@ -67,16 +67,36 @@ dat.m
 ```
 
 
-Lo que ahora interesa es la columna "_variable_", cada nombre dice la medicion que se evalúa, la estación donde se evalúa y las unidades de la medición. En este caso los 5 valores de la columna "_variable_" son los siguientes.
+Lo que ahora interesa es la columna "_variable_", cada nombre dice la medicion que se evalúa, la estación donde se evalúa y las unidades de la medición. En este caso los valores de la columna "_variable_" son los siguientes.
 
 <!-- html table generated in R 2.15.1 by xtable 1.7-0 package -->
-<!-- Tue Aug 28 11:41:54 2012 -->
+<!-- Tue Aug 28 19:01:40 2012 -->
 <TABLE align = 'center'>
 <TR> <TH> codigos </TH>  </TR>
   <TR> <TD align="center"> NOXUIZ_.ppb. </TD> </TR>
+  <TR> <TD align="center"> NOXUIZ_.ppb. </TD> </TR>
+  <TR> <TD align="center"> NOXUIZ_.ppb. </TD> </TR>
+  <TR> <TD align="center"> NOXUIZ_.ppb. </TD> </TR>
+  <TR> <TD align="center"> NOXUIZ_.ppb. </TD> </TR>
+  <TR> <TD align="center"> PM25UIZ_.µg.m3. </TD> </TR>
+  <TR> <TD align="center"> PM25UIZ_.µg.m3. </TD> </TR>
+  <TR> <TD align="center"> PM25UIZ_.µg.m3. </TD> </TR>
+  <TR> <TD align="center"> PM25UIZ_.µg.m3. </TD> </TR>
   <TR> <TD align="center"> PM25UIZ_.µg.m3. </TD> </TR>
   <TR> <TD align="center"> SO2PED_.ppb. </TD> </TR>
+  <TR> <TD align="center"> SO2PED_.ppb. </TD> </TR>
+  <TR> <TD align="center"> SO2PED_.ppb. </TD> </TR>
+  <TR> <TD align="center"> SO2PED_.ppb. </TD> </TR>
+  <TR> <TD align="center"> SO2PED_.ppb. </TD> </TR>
   <TR> <TD align="center"> VVPED_.m.s. </TD> </TR>
+  <TR> <TD align="center"> VVPED_.m.s. </TD> </TR>
+  <TR> <TD align="center"> VVPED_.m.s. </TD> </TR>
+  <TR> <TD align="center"> VVPED_.m.s. </TD> </TR>
+  <TR> <TD align="center"> VVPED_.m.s. </TD> </TR>
+  <TR> <TD align="center"> VVSAG_.m.s. </TD> </TR>
+  <TR> <TD align="center"> VVSAG_.m.s. </TD> </TR>
+  <TR> <TD align="center"> VVSAG_.m.s. </TD> </TR>
+  <TR> <TD align="center"> VVSAG_.m.s. </TD> </TR>
   <TR> <TD align="center"> VVSAG_.m.s. </TD> </TR>
    </TABLE>
 
@@ -89,7 +109,7 @@ Con la librería **`stringr`** se manipulan los códigos para separarlos en las 
 
 ```r
 library(stringr)
-codigos <- unique(as.character(dat.m$variable))
+codigos <- as.character(dat.m$variable)
 ```
 
 
@@ -104,12 +124,32 @@ codigos.sep
 ```
 
 ```
-##      [,1]      [,2]     
-## [1,] "NOXUIZ"  ".ppb."  
-## [2,] "PM25UIZ" ".µg.m3."
-## [3,] "SO2PED"  ".ppb."  
-## [4,] "VVPED"   ".m.s."  
-## [5,] "VVSAG"   ".m.s."  
+##       [,1]      [,2]     
+##  [1,] "NOXUIZ"  ".ppb."  
+##  [2,] "NOXUIZ"  ".ppb."  
+##  [3,] "NOXUIZ"  ".ppb."  
+##  [4,] "NOXUIZ"  ".ppb."  
+##  [5,] "NOXUIZ"  ".ppb."  
+##  [6,] "PM25UIZ" ".µg.m3."
+##  [7,] "PM25UIZ" ".µg.m3."
+##  [8,] "PM25UIZ" ".µg.m3."
+##  [9,] "PM25UIZ" ".µg.m3."
+## [10,] "PM25UIZ" ".µg.m3."
+## [11,] "SO2PED"  ".ppb."  
+## [12,] "SO2PED"  ".ppb."  
+## [13,] "SO2PED"  ".ppb."  
+## [14,] "SO2PED"  ".ppb."  
+## [15,] "SO2PED"  ".ppb."  
+## [16,] "VVPED"   ".m.s."  
+## [17,] "VVPED"   ".m.s."  
+## [18,] "VVPED"   ".m.s."  
+## [19,] "VVPED"   ".m.s."  
+## [20,] "VVPED"   ".m.s."  
+## [21,] "VVSAG"   ".m.s."  
+## [22,] "VVSAG"   ".m.s."  
+## [23,] "VVSAG"   ".m.s."  
+## [24,] "VVSAG"   ".m.s."  
+## [25,] "VVSAG"   ".m.s."  
 ```
 
 
@@ -144,18 +184,40 @@ Se crea un **data.frame** con las variables _estacion_, _medicion_ y _unidades_.
 
 
 ```r
-temp <- data.frame(variable = codigos, estacion = estacion, medicion = medicion, 
-    unidades = unidades)
+temp <- data.frame(#variable = codigos,
+  estacion = estacion,
+  medicion = medicion,
+  unidades = unidades )
 temp
 ```
 
 ```
-##          variable estacion medicion unidades
-## 1    NOXUIZ_.ppb.      UIZ      NOX    .ppb.
-## 2 PM25UIZ_.µg.m3.      UIZ     PM25  .µg.m3.
-## 3    SO2PED_.ppb.      PED      SO2    .ppb.
-## 4     VVPED_.m.s.      PED       VV    .m.s.
-## 5     VVSAG_.m.s.      SAG       VV    .m.s.
+##    estacion medicion unidades
+## 1       UIZ      NOX    .ppb.
+## 2       UIZ      NOX    .ppb.
+## 3       UIZ      NOX    .ppb.
+## 4       UIZ      NOX    .ppb.
+## 5       UIZ      NOX    .ppb.
+## 6       UIZ     PM25  .µg.m3.
+## 7       UIZ     PM25  .µg.m3.
+## 8       UIZ     PM25  .µg.m3.
+## 9       UIZ     PM25  .µg.m3.
+## 10      UIZ     PM25  .µg.m3.
+## 11      PED      SO2    .ppb.
+## 12      PED      SO2    .ppb.
+## 13      PED      SO2    .ppb.
+## 14      PED      SO2    .ppb.
+## 15      PED      SO2    .ppb.
+## 16      PED       VV    .m.s.
+## 17      PED       VV    .m.s.
+## 18      PED       VV    .m.s.
+## 19      PED       VV    .m.s.
+## 20      PED       VV    .m.s.
+## 21      SAG       VV    .m.s.
+## 22      SAG       VV    .m.s.
+## 23      SAG       VV    .m.s.
+## 24      SAG       VV    .m.s.
+## 25      SAG       VV    .m.s.
 ```
 
 
@@ -168,7 +230,7 @@ En este caso a la base vertical (_dat.m_) le agrega las columnas de la base con 
 
 ```r
 library(plyr)
-dat.j <- join(dat.m, temp)
+dat.j <- cbind(dat.m, temp)
 dat.j
 ```
 
@@ -239,15 +301,14 @@ head(dat.j)
 ```
 
 
-****
-
-## `Libraries`
 - - - -
 
 ## Referencias
-1. Grolemund G, Wickham H. *Dates and Times Made Easy with lubridate*. Rice University.
+1. Myles, John. *Project Template*.
+URL [http://www.johnmyleswhite.com/notebook/2010/08/26/projecttemplate/](http://www.johnmyleswhite.com/notebook/2010/08/26/projecttemplate/)
+2. Grolemund G, Wickham H. *Dates and Times Made Easy with lubridate*. Rice University.
 URL [http://www.jstatsoft.org/v40/i01/paper](http://www.jstatsoft.org/v40/i01/paper).
-2. Wickham, Hadley. *The Split-Apply-Combine Strategy for Data Analysis*.
+3. Wickham, Hadley. *The Split-Apply-Combine Strategy for Data Analysis*.
 URL [http://www.jstatsoft.org/v40/i03/paper](http://www.jstatsoft.org/v40/i03/paper) 
-3. Wickham, Hadley. *stringr: modern, consistent string processing*.
+4. Wickham, Hadley. *stringr: modern, consistent string processing*.
 URL [http://journal.r-project.org/archive/2010-2/RJournal_2010-2_Wickham.pdf](http://journal.r-project.org/archive/2010-2/RJournal_2010-2_Wickham.pdf)
