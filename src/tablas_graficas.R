@@ -57,7 +57,7 @@ table(dat$estacion, dat$medicion)
 modelos <- dlply(dat, c('medicion', 'estacion'), 
     function(df){
        if(nrow(df) > 1){
-           mod.1 <- bayesglm(value ~ mes + hora + año, data = df)
+           mod.1 <- bayesglm(value ~ mes + hora + año, data = df)
            mod.1
        }    
     }, .progress = "text")   
@@ -100,5 +100,7 @@ ggplot(tt, aes(x = año, y = hora, label = estacion)) +
 #' - - - -
 #' 
 #' ## Referencias
-#' * Wickham, Hadley. *The Split-Apply-Combine Strategy for Data Analysis*.
+#' * Hadley Wickham. *The Split-Apply-Combine Strategy for Data Analysis*.
 #' URL [http://www.jstatsoft.org/v40/i03/paper](http://www.jstatsoft.org/v40/i03/paper) 
+#' * Hadley Wickham. *ggplot2: Elegant Graphics for Data Analysis (Use R!)*.
+#' Springer. 2009.

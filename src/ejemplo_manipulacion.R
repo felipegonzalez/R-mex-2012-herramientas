@@ -70,16 +70,25 @@ dat.m$FECHA <- NULL
 head(dat.m)
 
 #' Finalmente, falta recodificar mediciones faltantes, que en la base original están indicados de varias maneras (-999,-9.9, etc.)):
-
+#+ recodificar, message=FALSE
+faltantes <- c('-9.9', '-99', '-99.9', '-999', 'NR')
+dat.m$value[dat.m$value %in% faltantes] <- NA
+dat.m$value <- as.numeric(dat.m$value)
 
 
 
 #' - - - -
 #' 
 #' ## Referencias
-#' 1. Myles, John. *Project Template*.
+#' 1. John Myles. *Project Template*.
 #' URL [http://www.johnmyleswhite.com/notebook/2010/08/26/projecttemplate/](http://www.johnmyleswhite.com/notebook/2010/08/26/projecttemplate/)
-#' 2. Grolemund G, Wickham H. *Dates and Times Made Easy with lubridate*. Rice University.
-#' URL [http://www.jstatsoft.org/v40/i01/paper](http://www.jstatsoft.org/v40/i01/paper).
-#' 3. Wickham, Hadley. *stringr: modern, consistent string processing*.
+#' 2. Hadley Wickham. *Reshape2*.
+#' URL [http://had.co.nz/reshape/](http://had.co.nz/reshape/)
+#' 3. Hadley Wickham. *stringr: modern, consistent string processing*.
 #' URL [http://journal.r-project.org/archive/2010-2/RJournal_2010-2_Wickham.pdf](http://journal.r-project.org/archive/2010-2/RJournal_2010-2_Wickham.pdf)
+#' 4. Grolemund G, Wickham H. *Dates and Times Made Easy with lubridate*. Rice University.
+#' URL [http://www.jstatsoft.org/v40/i01/paper](http://www.jstatsoft.org/v40/i01/paper)
+#' 5. Hadley Wickham. *The Split-Apply-Combine Strategy for Data Analysis*
+#' URL [http://www.jstatsoft.org/v40/i01/paper](http://www.jstatsoft.org/v40/i01/paper)
+#' 6. Hadley Wickham. *Plyr*
+#' URL [http://plyr.had.co.nz/](http://plyr.had.co.nz/)

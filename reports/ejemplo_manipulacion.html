@@ -185,98 +185,115 @@ hljs.initHighlightingOnLoad();
 
 <h2>Lectura de datos y estructura</h2>
 
-<p>Los datos se leen con la función <strong>get</strong> de <strong><code>ProjectTemplate</code></strong> y aleatoriamente se escogen cinco reglones y columnas.</p>
+<p>Los datos se leen con la función <strong>get</strong> de <strong><code>ProjectTemplate</code></strong>.</p>
 
-<pre><code class="r">dat.0 &lt;- get(&quot;SIMAT.2005&quot;)
-set.seed(858764)
-dat &lt;- dat.0[sample(1:nrow(dat.0), 5), c(1:2, sample(3:ncol(dat.0), 5))]
-dat
+<pre><code class="r">dat &lt;- get(&quot;SIMAT.2005&quot;)
 </code></pre>
 
-<pre><code>##           FECHA HORA NOXUIZ_.ppb. PM25UIZ_.µg.m3. SO2PED_.ppb. VVPED_.m.s.
-## 7801 22/11/2005    1           60              39           56         1.1
-## 7809 22/11/2005    9           93              42           95         0.7
-## 3446 24/05/2005   14           42              44            3         1.4
-## 7640 15/11/2005    8          304              31           12         0.4
-## 1507 04/03/2005   19           31              13            0         2.4
-##      VVSAG_.m.s.
-## 7801         2.4
-## 7809         3.0
-## 3446         1.5
-## 7640         1.1
-## 1507        -9.9
+<p>Los datos están desorganizados: los nombres de las columnas incluyen información acerca de las unidades de medición (estaciones), de las mediciones y de las unidades de medición:</p>
+
+<pre><code class="r">head(dat)
 </code></pre>
 
-<p>Con la función <strong>melt</strong> de <strong><code>reshape2</code></strong> transponemos la base por mediciones y estaciones. <br/>
-La extracción de la base tiene dos variables: &ldquo;<em>FECHA</em>&rdquo; y &ldquo;<em>HORA</em>&rdquo;. Esto funciona para tener la misma estructura en todos los años que se leyeron. </p>
+<pre><code>##        FECHA HORA COTLA_.ppm. COMER_.ppm. COPED_.ppm. COUIZ_.ppm.
+## 1 01/01/2005    1         5.0         6.4         1.7         2.6
+## 2 01/01/2005    2         3.8         4.2         1.9         2.9
+## 3 01/01/2005    3         3.0         3.7         2.0         3.5
+## 4 01/01/2005    4         3.2         3.5         2.2         4.0
+## 5 01/01/2005    5         3.0         3.6         3.1         4.8
+## 6 01/01/2005    6         2.7         6.5         4.3         5.4
+##   COSAG_.ppm. NO2SAG_.ppb. NO2TLA_.ppb. NO2MER_.ppb. NO2PED_.ppb.
+## 1         2.7           65           90           95           38
+## 2         2.3           59           71           85           44
+## 3         3.9           59           61           77           43
+## 4         4.2           61           61           68           53
+## 5         3.7           61           60           67           54
+## 6         2.2           42           55           67           62
+##   NO2UIZ_.ppb. NOXSAG_.ppb. NOXTLA_.ppb. NOXMER_.ppb. NOXPED_.ppb.
+## 1           70          117          197          277           40
+## 2           65           84          157          193           48
+## 3           64          168          117          156           49
+## 4           65          178          124          148           66
+## 5           61          132          113          143           97
+## 6           60           79          101          258          134
+##   NOXUIZ_.ppb. O3SAG_.ppb. O3TLA_.ppb. O3MER_.ppb. O3PED_.ppb. O3UIZ_.ppb.
+## 1           84           3           1           0          29           8
+## 2           94           3           1           0          21           8
+## 3          122           3           1           0          25           8
+## 4          130           4           1           0          12          10
+## 5          158           4           1           1          10           8
+## 6          188           3           1           1          10           5
+##   SO2SAG_.ppb. SO2TLA_.ppb. SO2MER_.ppb. SO2PED_.ppb. SO2UIZ_.ppb.
+## 1           15           53           20           10           19
+## 2           17           60           20           13           24
+## 3           19           52           18           16           23
+## 4           20           41           17           13           24
+## 5           22           34           17           12           23
+## 6           20           28           20           19           23
+##   PM10TLA_.µg.m3. PM10MER_.µg.m3. PM10PED_.µg.m3. PM10SAG_.µg.m3.
+## 1             225             136              91             174
+## 2             179             158             112             232
+## 3             136             169             107             264
+## 4             138             161             103             359
+## 5             119             182             130             396
+## 6             110             274             206             238
+##   PM25MER_.µg.m3. PM25TLA_.µg.m3. PM25UIZ_.µg.m3. PM25SAG_.µg.m3.
+## 1              99            -999             106             103
+## 2             114            -999             120             139
+## 3             140            -999             194             186
+## 4             137            -999             182             235
+## 5             142            -999             265             308
+## 6             179            -999             300             371
+##   TMPSAG_.gradosC. TMPTLA_.gradosC. TMPMER_.gradosC. TMPPED_.gradosC.
+## 1              7.8             11.3             11.2              9.6
+## 2              7.1             10.1             10.4              8.5
+## 3              6.7              8.9              9.6              8.4
+## 4              6.1              8.5              8.9              7.5
+## 5              6.3              8.2              8.4              6.7
+## 6              5.1              7.8              7.9              7.0
+##   HRSAG_... HRTLA_... HRMER_... HRPED_... VVSAG_.m.s. VVTLA_.m.s.
+## 1        46        55        55        43         0.5         1.0
+## 2        48        58        55        48         0.5         0.7
+## 3        50        59        57        49         0.7         0.1
+## 4        53        62        58        53         0.7         1.3
+## 5        54        63        60        56         1.1         0.4
+## 6        51        64        65        57         0.7         0.6
+##   VVMER_.m.s. VVPED_.m.s. DVSAG_.grados. DVTLA_.grados. DVMER_.grados.
+## 1         0.4         0.7             40            176            134
+## 2        -9.9         0.7             20            259           -999
+## 3        -9.9         0.6             40            197           -999
+## 4        -9.9         0.6             26            266           -999
+## 5         0.4         0.9             12            240             56
+## 6         0.7         0.8             62            288             83
+##   DVPED_.grados.
+## 1            214
+## 2            247
+## 3            267
+## 4            278
+## 5            274
+## 6            274
+</code></pre>
+
+<p>Con la función <strong>melt</strong> de <strong><code>reshape2</code></strong> transponemos la base por mediciones y estaciones. Con esto podemos crear fácilmente identificadores de mediciones y estaciones y extraer las unidades de cada medición. Adicionalmente, podremos pegar de manera segura a las tablas de otros años.  </p>
 
 <pre><code class="r">library(reshape2)
 dat.m &lt;- melt(dat, id.vars = c(&quot;FECHA&quot;, &quot;HORA&quot;))
-dat.m
+head(dat.m)
 </code></pre>
 
-<pre><code>##         FECHA HORA        variable value
-## 1  22/11/2005    1    NOXUIZ_.ppb.  60.0
-## 2  22/11/2005    9    NOXUIZ_.ppb.  93.0
-## 3  24/05/2005   14    NOXUIZ_.ppb.  42.0
-## 4  15/11/2005    8    NOXUIZ_.ppb. 304.0
-## 5  04/03/2005   19    NOXUIZ_.ppb.  31.0
-## 6  22/11/2005    1 PM25UIZ_.µg.m3.  39.0
-## 7  22/11/2005    9 PM25UIZ_.µg.m3.  42.0
-## 8  24/05/2005   14 PM25UIZ_.µg.m3.  44.0
-## 9  15/11/2005    8 PM25UIZ_.µg.m3.  31.0
-## 10 04/03/2005   19 PM25UIZ_.µg.m3.  13.0
-## 11 22/11/2005    1    SO2PED_.ppb.  56.0
-## 12 22/11/2005    9    SO2PED_.ppb.  95.0
-## 13 24/05/2005   14    SO2PED_.ppb.   3.0
-## 14 15/11/2005    8    SO2PED_.ppb.  12.0
-## 15 04/03/2005   19    SO2PED_.ppb.   0.0
-## 16 22/11/2005    1     VVPED_.m.s.   1.1
-## 17 22/11/2005    9     VVPED_.m.s.   0.7
-## 18 24/05/2005   14     VVPED_.m.s.   1.4
-## 19 15/11/2005    8     VVPED_.m.s.   0.4
-## 20 04/03/2005   19     VVPED_.m.s.   2.4
-## 21 22/11/2005    1     VVSAG_.m.s.   2.4
-## 22 22/11/2005    9     VVSAG_.m.s.   3.0
-## 23 24/05/2005   14     VVSAG_.m.s.   1.5
-## 24 15/11/2005    8     VVSAG_.m.s.   1.1
-## 25 04/03/2005   19     VVSAG_.m.s.  -9.9
+<pre><code>##        FECHA HORA    variable value
+## 1 01/01/2005    1 COTLA_.ppm.   5.0
+## 2 01/01/2005    2 COTLA_.ppm.   3.8
+## 3 01/01/2005    3 COTLA_.ppm.   3.0
+## 4 01/01/2005    4 COTLA_.ppm.   3.2
+## 5 01/01/2005    5 COTLA_.ppm.   3.0
+## 6 01/01/2005    6 COTLA_.ppm.   2.7
 </code></pre>
 
-<p>Lo que ahora interesa es la columna &ldquo;<em>variable</em>&rdquo;, cada nombre dice la medicion que se evalúa, la estación donde se evalúa y las unidades de la medición. En este caso los valores de la columna &ldquo;<em>variable</em>&rdquo; son los siguientes.</p>
+<p>Lo que ahora interesa es la columna &#39;<em>variable</em>&#39;, cada nombre dice la medicion que se evalúa, la estación donde se evalúa y las unidades de la medición. En este caso los valores de la columna &#39;<em>variable</em>&#39; son los siguientes.</p>
 
-<!-- html table generated in R 2.15.1 by xtable 1.7-0 package -->
-
-<!-- Tue Aug 28 19:01:40 2012 -->
-
-<TABLE align = 'center'>
-<TR> <TH> codigos </TH>  </TR>
-  <TR> <TD align="center"> NOXUIZ_.ppb. </TD> </TR>
-  <TR> <TD align="center"> NOXUIZ_.ppb. </TD> </TR>
-  <TR> <TD align="center"> NOXUIZ_.ppb. </TD> </TR>
-  <TR> <TD align="center"> NOXUIZ_.ppb. </TD> </TR>
-  <TR> <TD align="center"> NOXUIZ_.ppb. </TD> </TR>
-  <TR> <TD align="center"> PM25UIZ_.µg.m3. </TD> </TR>
-  <TR> <TD align="center"> PM25UIZ_.µg.m3. </TD> </TR>
-  <TR> <TD align="center"> PM25UIZ_.µg.m3. </TD> </TR>
-  <TR> <TD align="center"> PM25UIZ_.µg.m3. </TD> </TR>
-  <TR> <TD align="center"> PM25UIZ_.µg.m3. </TD> </TR>
-  <TR> <TD align="center"> SO2PED_.ppb. </TD> </TR>
-  <TR> <TD align="center"> SO2PED_.ppb. </TD> </TR>
-  <TR> <TD align="center"> SO2PED_.ppb. </TD> </TR>
-  <TR> <TD align="center"> SO2PED_.ppb. </TD> </TR>
-  <TR> <TD align="center"> SO2PED_.ppb. </TD> </TR>
-  <TR> <TD align="center"> VVPED_.m.s. </TD> </TR>
-  <TR> <TD align="center"> VVPED_.m.s. </TD> </TR>
-  <TR> <TD align="center"> VVPED_.m.s. </TD> </TR>
-  <TR> <TD align="center"> VVPED_.m.s. </TD> </TR>
-  <TR> <TD align="center"> VVPED_.m.s. </TD> </TR>
-  <TR> <TD align="center"> VVSAG_.m.s. </TD> </TR>
-  <TR> <TD align="center"> VVSAG_.m.s. </TD> </TR>
-  <TR> <TD align="center"> VVSAG_.m.s. </TD> </TR>
-  <TR> <TD align="center"> VVSAG_.m.s. </TD> </TR>
-  <TR> <TD align="center"> VVSAG_.m.s. </TD> </TR>
-   </TABLE>
+<pre><code class="r"># # tablecodigos, results=&#39;asis&#39;, echo = F library(xtable) codigos &lt;-# as.character(dat.m$variable) tab.df &lt;- data.frame(codigos) tab &lt;-# xtable(tab.df, align = &#39;cc&#39;) print(tab, type=&#39;html&#39;,# html.table.attributes = &#39;align = &#39;center&#39;&#39;, include.rownames=FALSE)
+</code></pre>
 
 <hr/>
 
@@ -285,50 +302,31 @@ dat.m
 <p>Con la librería <strong><code>stringr</code></strong> se manipulan los códigos para separarlos en las tres variables que interesan. </p>
 
 <pre><code class="r">library(stringr)
-codigos &lt;- as.character(dat.m$variable)
+codigos &lt;- dat.m$variable
 </code></pre>
 
 <ul>
 <li><strong>str_split_fixed</strong> </li>
 </ul>
 
-<p>Separa una cadena en distintas partes siguiendo un patrón, en este caso (&ldquo;_&rdquo;), y devuelve las nuevas cadenas en una matriz que además se puede definir la dimensión</p>
+<p>Separa una cadena en distintas partes siguiendo un patrón, en este caso (&#39;_&#39;), y devuelve las nuevas cadenas en una matriz que además se puede definir la dimensión</p>
 
-<pre><code class="r">codigos.sep &lt;- str_split_fixed(codigos, &quot;_&quot;, n = 2)
-codigos.sep
+<pre><code class="r">codigos.sep &lt;- str_split_fixed(dat.m$variable, &quot;_&quot;, n = 2)
+head(codigos.sep)
 </code></pre>
 
-<pre><code>##       [,1]      [,2]     
-##  [1,] &quot;NOXUIZ&quot;  &quot;.ppb.&quot;  
-##  [2,] &quot;NOXUIZ&quot;  &quot;.ppb.&quot;  
-##  [3,] &quot;NOXUIZ&quot;  &quot;.ppb.&quot;  
-##  [4,] &quot;NOXUIZ&quot;  &quot;.ppb.&quot;  
-##  [5,] &quot;NOXUIZ&quot;  &quot;.ppb.&quot;  
-##  [6,] &quot;PM25UIZ&quot; &quot;.µg.m3.&quot;
-##  [7,] &quot;PM25UIZ&quot; &quot;.µg.m3.&quot;
-##  [8,] &quot;PM25UIZ&quot; &quot;.µg.m3.&quot;
-##  [9,] &quot;PM25UIZ&quot; &quot;.µg.m3.&quot;
-## [10,] &quot;PM25UIZ&quot; &quot;.µg.m3.&quot;
-## [11,] &quot;SO2PED&quot;  &quot;.ppb.&quot;  
-## [12,] &quot;SO2PED&quot;  &quot;.ppb.&quot;  
-## [13,] &quot;SO2PED&quot;  &quot;.ppb.&quot;  
-## [14,] &quot;SO2PED&quot;  &quot;.ppb.&quot;  
-## [15,] &quot;SO2PED&quot;  &quot;.ppb.&quot;  
-## [16,] &quot;VVPED&quot;   &quot;.m.s.&quot;  
-## [17,] &quot;VVPED&quot;   &quot;.m.s.&quot;  
-## [18,] &quot;VVPED&quot;   &quot;.m.s.&quot;  
-## [19,] &quot;VVPED&quot;   &quot;.m.s.&quot;  
-## [20,] &quot;VVPED&quot;   &quot;.m.s.&quot;  
-## [21,] &quot;VVSAG&quot;   &quot;.m.s.&quot;  
-## [22,] &quot;VVSAG&quot;   &quot;.m.s.&quot;  
-## [23,] &quot;VVSAG&quot;   &quot;.m.s.&quot;  
-## [24,] &quot;VVSAG&quot;   &quot;.m.s.&quot;  
-## [25,] &quot;VVSAG&quot;   &quot;.m.s.&quot;  
+<pre><code>##      [,1]    [,2]   
+## [1,] &quot;COTLA&quot; &quot;.ppm.&quot;
+## [2,] &quot;COTLA&quot; &quot;.ppm.&quot;
+## [3,] &quot;COTLA&quot; &quot;.ppm.&quot;
+## [4,] &quot;COTLA&quot; &quot;.ppm.&quot;
+## [5,] &quot;COTLA&quot; &quot;.ppm.&quot;
+## [6,] &quot;COTLA&quot; &quot;.ppm.&quot;
 </code></pre>
 
 <p>De la matríz que se obtiene sólo se extrae la segunda columna.</p>
 
-<pre><code class="r">unidades &lt;- codigos.sep[, 2]
+<pre><code class="r">dat.m$unidades &lt;- codigos.sep[, 2]
 </code></pre>
 
 <p>Sin embargo, en la primera columna todavía se necesita extraer subcadenas con un patrón determinado y obtener las dos varibles faltantes que dependen de las posiciones de los caracteres.</p>
@@ -337,124 +335,63 @@ codigos.sep
 <li><strong>str_sub</strong> <em>(equivale a <em>strsub</em>)</em></li>
 </ul>
 
-<p>Extrae una cadena de un vector siguiendo un patrón indicando las posiciones de inicio y final. Difiere en que regresa un vector de longitud cero si no existe el patrón y se puede usar signo negativo para indicar que las posiciones se invierten. </p>
+<p>Extrae una subcadena indicando las posiciones (número de caracteres) de inicio y final. Las posiciones pueden ser negativas indicando que se cuenta del final hacia el principio de la cadena, y regresa una cadena vacía si no las posiciones no aparecen en la cadena.</p>
 
-<pre><code class="r">estacion &lt;- str_sub(codigos.sep[, 1], start = -3, end = -1)
+<pre><code class="r">dat.m$estacion &lt;- str_sub(codigos.sep[, 1], start = -3, end = -1)
 </code></pre>
 
-<p>Como ninguna cadena del vector tiene más de 10 posiciones se indica este y tomar las posiciones restantes y en caso de no haber simplemente lo omite </p>
+<p>Como ninguna cadena del vector tiene más de 10 posiciones las siguientes subcadenas comienzan en su primer caracter:</p>
 
-<pre><code class="r">medicion &lt;- str_sub(codigos.sep[, 1], start = -10, end = -4)
+<pre><code class="r">dat.m$medicion &lt;- str_sub(codigos.sep[, 1], start = -10, end = -4)
+head(dat.m)
 </code></pre>
 
-<p>Se crea un <strong>data.frame</strong> con las variables <em>estacion</em>, <em>medicion</em> y <em>unidades</em>. </p>
-
-<pre><code class="r">temp &lt;- data.frame(#variable = codigos,
-  estacion = estacion,
-  medicion = medicion,
-  unidades = unidades )
-temp
-</code></pre>
-
-<pre><code>##    estacion medicion unidades
-## 1       UIZ      NOX    .ppb.
-## 2       UIZ      NOX    .ppb.
-## 3       UIZ      NOX    .ppb.
-## 4       UIZ      NOX    .ppb.
-## 5       UIZ      NOX    .ppb.
-## 6       UIZ     PM25  .µg.m3.
-## 7       UIZ     PM25  .µg.m3.
-## 8       UIZ     PM25  .µg.m3.
-## 9       UIZ     PM25  .µg.m3.
-## 10      UIZ     PM25  .µg.m3.
-## 11      PED      SO2    .ppb.
-## 12      PED      SO2    .ppb.
-## 13      PED      SO2    .ppb.
-## 14      PED      SO2    .ppb.
-## 15      PED      SO2    .ppb.
-## 16      PED       VV    .m.s.
-## 17      PED       VV    .m.s.
-## 18      PED       VV    .m.s.
-## 19      PED       VV    .m.s.
-## 20      PED       VV    .m.s.
-## 21      SAG       VV    .m.s.
-## 22      SAG       VV    .m.s.
-## 23      SAG       VV    .m.s.
-## 24      SAG       VV    .m.s.
-## 25      SAG       VV    .m.s.
-</code></pre>
-
-<hr/>
-
-<h2>Construcción de base</h2>
-
-<p>Para construir la base se agregan las variables construídas a la base de datos con la función <strong>join</strong> del paquete <strong><code>plyr</code></strong> que une dos data frames. <br/>
-En este caso a la base vertical (<em>dat.m</em>) le agrega las columnas de la base con las nuevas variables (<em>temp</em>) usando la columna común (<em>variable</em>) y sólo hay que especificar el tipo de union, el default es por la izquierda, es decir, para todos los valores de <em>dat.m</em> agrega la columna.</p>
-
-<pre><code class="r">library(plyr)
-dat.j &lt;- cbind(dat.m, temp)
-dat.j
-</code></pre>
-
-<pre><code>##         FECHA HORA        variable value estacion medicion unidades
-## 1  22/11/2005    1    NOXUIZ_.ppb.  60.0      UIZ      NOX    .ppb.
-## 2  22/11/2005    9    NOXUIZ_.ppb.  93.0      UIZ      NOX    .ppb.
-## 3  24/05/2005   14    NOXUIZ_.ppb.  42.0      UIZ      NOX    .ppb.
-## 4  15/11/2005    8    NOXUIZ_.ppb. 304.0      UIZ      NOX    .ppb.
-## 5  04/03/2005   19    NOXUIZ_.ppb.  31.0      UIZ      NOX    .ppb.
-## 6  22/11/2005    1 PM25UIZ_.µg.m3.  39.0      UIZ     PM25  .µg.m3.
-## 7  22/11/2005    9 PM25UIZ_.µg.m3.  42.0      UIZ     PM25  .µg.m3.
-## 8  24/05/2005   14 PM25UIZ_.µg.m3.  44.0      UIZ     PM25  .µg.m3.
-## 9  15/11/2005    8 PM25UIZ_.µg.m3.  31.0      UIZ     PM25  .µg.m3.
-## 10 04/03/2005   19 PM25UIZ_.µg.m3.  13.0      UIZ     PM25  .µg.m3.
-## 11 22/11/2005    1    SO2PED_.ppb.  56.0      PED      SO2    .ppb.
-## 12 22/11/2005    9    SO2PED_.ppb.  95.0      PED      SO2    .ppb.
-## 13 24/05/2005   14    SO2PED_.ppb.   3.0      PED      SO2    .ppb.
-## 14 15/11/2005    8    SO2PED_.ppb.  12.0      PED      SO2    .ppb.
-## 15 04/03/2005   19    SO2PED_.ppb.   0.0      PED      SO2    .ppb.
-## 16 22/11/2005    1     VVPED_.m.s.   1.1      PED       VV    .m.s.
-## 17 22/11/2005    9     VVPED_.m.s.   0.7      PED       VV    .m.s.
-## 18 24/05/2005   14     VVPED_.m.s.   1.4      PED       VV    .m.s.
-## 19 15/11/2005    8     VVPED_.m.s.   0.4      PED       VV    .m.s.
-## 20 04/03/2005   19     VVPED_.m.s.   2.4      PED       VV    .m.s.
-## 21 22/11/2005    1     VVSAG_.m.s.   2.4      SAG       VV    .m.s.
-## 22 22/11/2005    9     VVSAG_.m.s.   3.0      SAG       VV    .m.s.
-## 23 24/05/2005   14     VVSAG_.m.s.   1.5      SAG       VV    .m.s.
-## 24 15/11/2005    8     VVSAG_.m.s.   1.1      SAG       VV    .m.s.
-## 25 04/03/2005   19     VVSAG_.m.s.  -9.9      SAG       VV    .m.s.
+<pre><code>##        FECHA HORA    variable value unidades estacion medicion
+## 1 01/01/2005    1 COTLA_.ppm.   5.0    .ppm.      TLA       CO
+## 2 01/01/2005    2 COTLA_.ppm.   3.8    .ppm.      TLA       CO
+## 3 01/01/2005    3 COTLA_.ppm.   3.0    .ppm.      TLA       CO
+## 4 01/01/2005    4 COTLA_.ppm.   3.2    .ppm.      TLA       CO
+## 5 01/01/2005    5 COTLA_.ppm.   3.0    .ppm.      TLA       CO
+## 6 01/01/2005    6 COTLA_.ppm.   2.7    .ppm.      TLA       CO
 </code></pre>
 
 <hr/>
 
 <h2>Formato fechas</h2>
 
-<p>Por ultimo se preparan las fechas y se convierten en formato &ldquo;POSIXlt&rdquo; and &ldquo;POSIXct&rdquo; y en esta nueva fecha se agrega la hora del día en la que fue tomada con la funcion <strong>strptime</strong>.<br/>
-Una vez en este formato es muy sencillo extraer el año, mes, día y hora con la librería <strong><code>lubridate</code></strong> que tienen herramientas para manipular fechas. </p>
+<p>Por ultimo se preparan las fechas y se convierten en formato &#39;POSIXlt&#39;.<br/>
+Una vez en este formato es muy sencillo extraer el año, mes, día con la librería <strong><code>lubridate</code></strong> que tienen herramientas para manipular fechas. </p>
 
 <pre><code class="r">library(lubridate)
-dat.j$fecha.hora &lt;- strptime(paste(dat.j$FECHA, dat.j$HORA - 1), format = &quot;%d/%m/%Y %H&quot;)
-dat.j$año &lt;- year(dat.j$fecha.hora)
-dat.j$mes &lt;- month(dat.j$fecha.hora, label = TRUE)
-dat.j$dia &lt;- day(dat.j$fecha.hora)
-dat.j$hora &lt;- hour(dat.j$fecha.hora)
-dat.j$FECHA &lt;- NULL
-head(dat.j)
+dat.m$fecha &lt;- dmy(dat.m$FECHA)
+dat.m$año &lt;- year(dat.m$fecha)
+dat.m$mes &lt;- month(dat.m$fecha, label = TRUE)
+dat.m$dia &lt;- day(dat.m$fecha)
+dat.m$FECHA &lt;- NULL
+head(dat.m)
 </code></pre>
 
-<pre><code>##   HORA        variable value estacion medicion unidades
-## 1    1    NOXUIZ_.ppb.    60      UIZ      NOX    .ppb.
-## 2    9    NOXUIZ_.ppb.    93      UIZ      NOX    .ppb.
-## 3   14    NOXUIZ_.ppb.    42      UIZ      NOX    .ppb.
-## 4    8    NOXUIZ_.ppb.   304      UIZ      NOX    .ppb.
-## 5   19    NOXUIZ_.ppb.    31      UIZ      NOX    .ppb.
-## 6    1 PM25UIZ_.µg.m3.    39      UIZ     PM25  .µg.m3.
-##            fecha.hora  año mes dia hora
-## 1 2005-11-22 00:00:00 2005 Nov  22    0
-## 2 2005-11-22 08:00:00 2005 Nov  22    8
-## 3 2005-05-24 13:00:00 2005 May  24   13
-## 4 2005-11-15 07:00:00 2005 Nov  15    7
-## 5 2005-03-04 18:00:00 2005 Mar   4   18
-## 6 2005-11-22 00:00:00 2005 Nov  22    0
+<pre><code>##   HORA    variable value unidades estacion medicion      fecha  año mes
+## 1    1 COTLA_.ppm.   5.0    .ppm.      TLA       CO 2005-01-01 2005 Jan
+## 2    2 COTLA_.ppm.   3.8    .ppm.      TLA       CO 2005-01-01 2005 Jan
+## 3    3 COTLA_.ppm.   3.0    .ppm.      TLA       CO 2005-01-01 2005 Jan
+## 4    4 COTLA_.ppm.   3.2    .ppm.      TLA       CO 2005-01-01 2005 Jan
+## 5    5 COTLA_.ppm.   3.0    .ppm.      TLA       CO 2005-01-01 2005 Jan
+## 6    6 COTLA_.ppm.   2.7    .ppm.      TLA       CO 2005-01-01 2005 Jan
+##   dia
+## 1   1
+## 2   1
+## 3   1
+## 4   1
+## 5   1
+## 6   1
+</code></pre>
+
+<p>Finalmente, falta recodificar mediciones faltantes, que en la base original están indicados de varias maneras (-999,-9.9, etc.)):</p>
+
+<pre><code class="r">faltantes &lt;- c(&quot;-9.9&quot;, &quot;-99&quot;, &quot;-99.9&quot;, &quot;-999&quot;, &quot;NR&quot;)
+dat.m$value[dat.m$value %in% faltantes] &lt;- NA
+dat.m$value &lt;- as.numeric(dat.m$value)
 </code></pre>
 
 <hr/>
@@ -466,8 +403,6 @@ head(dat.j)
 URL <a href="http://www.johnmyleswhite.com/notebook/2010/08/26/projecttemplate/">http://www.johnmyleswhite.com/notebook/2010/08/26/projecttemplate/</a></li>
 <li>Grolemund G, Wickham H. <em>Dates and Times Made Easy with lubridate</em>. Rice University.
 URL <a href="http://www.jstatsoft.org/v40/i01/paper">http://www.jstatsoft.org/v40/i01/paper</a>.</li>
-<li>Wickham, Hadley. <em>The Split-Apply-Combine Strategy for Data Analysis</em>.
-URL <a href="http://www.jstatsoft.org/v40/i03/paper">http://www.jstatsoft.org/v40/i03/paper</a> </li>
 <li>Wickham, Hadley. <em>stringr: modern, consistent string processing</em>.
 URL <a href="http://journal.r-project.org/archive/2010-2/RJournal_2010-2_Wickham.pdf">http://journal.r-project.org/archive/2010-2/RJournal_2010-2_Wickham.pdf</a></li>
 </ol>
