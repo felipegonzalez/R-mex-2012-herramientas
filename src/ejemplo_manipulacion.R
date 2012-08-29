@@ -3,27 +3,26 @@
 #' ===
 
 #' ## Lectura de datos y estructura
-#' Los datos se leen con la función **get** de **`ProjectTemplate`** y aleatoriamente se escogen cinco reglones y columnas.
+#' Los datos se leen con la función **get** de **`ProjectTemplate`**.
 #+ getfunction
-dat.0 <- get("SIMAT.2005")
-set.seed(858764)
-dat <- dat.0[ sample(1:nrow(dat.0), 5), c(1:2, sample(3:ncol(dat.0), 5))]
-dat
+dat <- get('SIMAT.2005')
 
-#' Con la función **melt** de **`reshape2`** transponemos la base por mediciones y estaciones. 
-#' La extracción de la base tiene dos variables: "_FECHA_" y "_HORA_". Esto funciona para tener la misma estructura en todos los años que se leyeron. 
+#' Los datos están desorganizados: los nombres de las columnas incluyen información acerca de las unidades de medición (estaciones), de las mediciones y de las unidades de medición:
+head(dat)
+
+#' Con la función **melt** de **`reshape2`** transponemos la base por mediciones y estaciones. Con esto podemos crear fácilmente identificadores de mediciones y estaciones y extraer las unidades de cada medición. Adicionalmente, podremos pegar de manera segura a las tablas de otros años.  
 #+ meltfunction
 library(reshape2)
-dat.m <- melt(dat, id.vars = c("FECHA", "HORA"))
-dat.m
+dat.m <- melt(dat, id.vars = c('FECHA', 'HORA'))
+head(dat.m)
 
-#' Lo que ahora interesa es la columna "_variable_", cada nombre dice la medicion que se evalúa, la estación donde se evalúa y las unidades de la medición. En este caso los valores de la columna "_variable_" son los siguientes.
-#+ tablecodigos, results='asis', echo = F
-library(xtable)
-codigos <- as.character(dat.m$variable)
-tab.df <- data.frame(codigos)
-tab <- xtable(tab.df, align = "cc")
-print(tab, type="html", html.table.attributes = "align = 'center'", include.rownames=FALSE)
+#' Lo que ahora interesa es la columna '_variable_', cada nombre dice la medicion que se evalúa, la estación donde se evalúa y las unidades de la medición. En este caso los valores de la columna '_variable_' son los siguientes.
+# # tablecodigos, results='asis', echo = F
+# library(xtable)
+# codigos <- as.character(dat.m$variable)
+# tab.df <- data.frame(codigos)
+# tab <- xtable(tab.df, align = 'cc')
+# print(tab, type='html', html.table.attributes = 'align = 'center'', include.rownames=FALSE)
 
 
 
@@ -32,39 +31,26 @@ print(tab, type="html", html.table.attributes = "align = 'center'", include.rown
 #' ## Creación de variables
 #' Con la librería **`stringr`** se manipulan los códigos para separarlos en las tres variables que interesan. 
 library(stringr)
-codigos <- as.character(dat.m$variable)
+codigos <- dat.m$variable
 
 #' * **str_split_fixed** 
 #' 
-#' Separa una cadena en distintas partes siguiendo un patrón, en este caso ("_"), y devuelve las nuevas cadenas en una matriz que además se puede definir la dimensión
-codigos.sep <- str_split_fixed(codigos, '_', n = 2)
-codigos.sep
+#' Separa una cadena en distintas partes siguiendo un patrón, en este caso ('_'), y devuelve las nuevas cadenas en una matriz que además se puede definir la dimensión
+codigos.sep <- str_split_fixed(dat.m$variable, '_', n = 2)
+head(codigos.sep)
 
 #' De la matríz que se obtiene sólo se extrae la segunda columna.
-unidades <- codigos.sep[ , 2]
+dat.m$unidades <- codigos.sep[ , 2]
 
 #' Sin embargo, en la primera columna todavía se necesita extraer subcadenas con un patrón determinado y obtener las dos varibles faltantes que dependen de las posiciones de los caracteres.
 #' * **str_sub** _(equivale a *strsub*)_
 #' 
-#' Extrae una cadena de un vector siguiendo un patrón indicando las posiciones de inicio y final. Difiere en que regresa un vector de longitud cero si no existe el patrón y se puede usar signo negativo para indicar que las posiciones se invierten. 
-estacion <- str_sub(codigos.sep[, 1], start = -3, end = -1)
+#' Extrae una subcadena indicando las posiciones (número de caracteres) de inicio y final. Las posiciones pueden ser negativas indicando que se cuenta del final hacia el principio de la cadena, y regresa una cadena vacía si no las posiciones no aparecen en la cadena.
+dat.m$estacion <- str_sub(codigos.sep[, 1], start = -3, end = -1)
 
-#' Como ninguna cadena del vector tiene más de 10 posiciones se indica este y tomar las posiciones restantes y en caso de no haber simplemente lo omite 
-medicion <- str_sub(codigos.sep[ ,1], start = -10, end = -4)
-
-#' ****
-#' 
-#' ## Construcción de base
-#' Se crea un **data.frame** con las variables _estacion_, _medicion_ y _unidades_. 
-temp <- data.frame(estacion = estacion,
-  medicion = medicion,
-  unidades = unidades )
-temp
-
-#' Se agregan 
-#+ cbindfunction, message=FALSE
-dat.j <- cbind(dat.m, temp)
-dat.j
+#' Como ninguna cadena del vector tiene más de 10 posiciones las siguientes subcadenas comienzan en su primer caracter:
+dat.m$medicion <- str_sub(codigos.sep[ ,1], start = -10, end = -4)
+head(dat.m)
 
 
 
@@ -72,17 +58,19 @@ dat.j
 #' 
 #' ## Formato fechas
 #' 
-#' Por ultimo se preparan las fechas y se convierten en formato "POSIXlt" and "POSIXct" y en esta nueva fecha se agrega la hora del día en la que fue tomada con la funcion **strptime**.
-#' Una vez en este formato es muy sencillo extraer el año, mes, día y hora con la librería **`lubridate`** que tienen herramientas para manipular fechas. 
+#' Por ultimo se preparan las fechas y se convierten en formato 'POSIXlt'.
+#' Una vez en este formato es muy sencillo extraer el año, mes, día con la librería **`lubridate`** que tienen herramientas para manipular fechas. 
 #+ joinfechas, message=FALSE
 library(lubridate)
-dat.j$fecha.hora <- strptime(paste(dat.j$FECHA, dat.j$HORA - 1), format='%d/%m/%Y %H')
-dat.j$año <- year(dat.j$fecha.hora)
-dat.j$mes <- month(dat.j$fecha.hora, label = TRUE)
-dat.j$dia <- day(dat.j$fecha.hora) 
-dat.j$hora <- hour(dat.j$fecha.hora)
-dat.j$FECHA <- NULL
-head(dat.j)
+dat.m$fecha <- dmy(dat.m$FECHA)
+dat.m$año <- year(dat.m$fecha)
+dat.m$mes <- month(dat.m$fecha, label = TRUE)
+dat.m$dia <- day(dat.m$fecha) 
+dat.m$FECHA <- NULL
+head(dat.m)
+
+#' Finalmente, falta recodificar mediciones faltantes, que en la base original están indicados de varias maneras (-999,-9.9, etc.)):
+
 
 
 
