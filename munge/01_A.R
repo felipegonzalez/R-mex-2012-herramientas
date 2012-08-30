@@ -36,9 +36,10 @@ dat$value[dat$value %in% faltantes] <- NA
 dat$value <- as.numeric(dat$value)
 
 print('Preparar fechas')
-dat$fecha.hora <- dmy(dat$FECHA)
+dat$fecha.hora <- strptime(paste(dat$FECHA, dat$HORA - 1), format='%d/%m/%Y %H')
 dat$año <- year(dat$fecha.hora)
 dat$mes <- month(dat$fecha.hora, label = TRUE)
 dat$dia <- day(dat$fecha.hora) 
+dat$hora <- hour(dat$fecha.hora)
 dat$FECHA <- NULL
 cache('dat')
