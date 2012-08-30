@@ -36,10 +36,9 @@ dat$value[dat$value %in% faltantes] <- NA
 dat$value <- as.numeric(dat$value)
 
 print('Preparar fechas')
-dat$fecha.hora <- strptime(paste(dat$FECHA, dat$HORA - 1), format='%d/%m/%Y %H')
+dat$fecha.hora <- dmy(dat$FECHA)
 dat$año <- year(dat$fecha.hora)
 dat$mes <- month(dat$fecha.hora, label = TRUE)
-dat$dia <- day(dat$fecha.hora) # Primer día de la semana es domingo
-dat$hora <- hour(dat$fecha.hora)
+dat$dia <- day(dat$fecha.hora) 
 dat$FECHA <- NULL
 cache('dat')
