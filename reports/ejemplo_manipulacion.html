@@ -187,12 +187,12 @@ hljs.initHighlightingOnLoad();
 
 <p>Los datos se leen con la función <strong>get</strong> de <strong><code>ProjectTemplate</code></strong>.</p>
 
-<pre><code class="r">dat &lt;- get(&quot;SIMAT.2005&quot;)
+<pre><code class="r">datos &lt;- get(&quot;SIMAT.2005&quot;)
 </code></pre>
 
 <p>Los datos están desorganizados: los nombres de las columnas incluyen información acerca de las unidades de medición (estaciones), de las mediciones y de las unidades de medición:</p>
 
-<pre><code class="r">head(dat)
+<pre><code class="r">head(datos)
 </code></pre>
 
 <pre><code>##        FECHA HORA COTLA_.ppm. COMER_.ppm. COPED_.ppm. COUIZ_.ppm.
@@ -277,7 +277,7 @@ hljs.initHighlightingOnLoad();
 <p>Con la función <strong>melt</strong> de <strong><code>reshape2</code></strong> transponemos la base por mediciones y estaciones. Con esto podemos crear fácilmente identificadores de mediciones y estaciones y extraer las unidades de cada medición. Adicionalmente, podremos pegar de manera segura a las tablas de otros años.  </p>
 
 <pre><code class="r">library(reshape2)
-dat.m &lt;- melt(dat, id.vars = c(&quot;FECHA&quot;, &quot;HORA&quot;))
+dat.m &lt;- melt(datos, id.vars = c(&quot;FECHA&quot;, &quot;HORA&quot;))
 head(dat.m)
 </code></pre>
 
@@ -292,7 +292,7 @@ head(dat.m)
 
 <p>Lo que ahora interesa es la columna &#39;<em>variable</em>&#39;, cada nombre dice la medicion que se evalúa, la estación donde se evalúa y las unidades de la medición. En este caso los valores de la columna &#39;<em>variable</em>&#39; son los siguientes.</p>
 
-<pre><code class="r"># # tablecodigos, results=&#39;asis&#39;, echo = F library(xtable) codigos &lt;-# as.character(dat.m$variable) tab.df &lt;- data.frame(codigos) tab &lt;-# xtable(tab.df, align = &#39;cc&#39;) print(tab, type=&#39;html&#39;,# html.table.attributes = &#39;align = &#39;center&#39;&#39;, include.rownames=FALSE)
+<pre><code class="r"># # tablecodigos, results=&#39;asis&#39;, echo = FALSE, message = FALSE# library(xtable) codigos &lt;- as.character(dat.m$variable) tab.df &lt;-# data.frame(codigos) tab &lt;- xtable(tab.df, align = &#39;cc&#39;) print(tab,# type=&#39;html&#39;, html.table.attributes = &#39;align = &#39;center&#39;&#39;,# include.rownames=FALSE)
 </code></pre>
 
 <hr/>
@@ -403,13 +403,15 @@ dat.m$value &lt;- as.numeric(dat.m$value)
 URL <a href="http://www.johnmyleswhite.com/notebook/2010/08/26/projecttemplate/">http://www.johnmyleswhite.com/notebook/2010/08/26/projecttemplate/</a></li>
 <li>Hadley Wickham. <em>Reshape2</em>.
 URL <a href="http://had.co.nz/reshape/">http://had.co.nz/reshape/</a></li>
+<li>Hadley Wickham. <em>Reshaping Data with the reshape Package</em>.
+URL <a href="http://www.jstatsoft.org/v21/i12/paper">http://www.jstatsoft.org/v21/i12/paper</a></li>
 <li>Hadley Wickham. <em>stringr: modern, consistent string processing</em>.
 URL <a href="http://journal.r-project.org/archive/2010-2/RJournal_2010-2_Wickham.pdf">http://journal.r-project.org/archive/2010-2/RJournal_2010-2_Wickham.pdf</a></li>
 <li>Grolemund G, Wickham H. <em>Dates and Times Made Easy with lubridate</em>. Rice University.
+URL <a href="http://www.jstatsoft.org/v40/i03/paper">http://www.jstatsoft.org/v40/i03/paper</a></li>
+<li>Hadley Wickham. <em>The Split-Apply-Combine Strategy for Data Analysis</em>.
 URL <a href="http://www.jstatsoft.org/v40/i01/paper">http://www.jstatsoft.org/v40/i01/paper</a></li>
-<li>Hadley Wickham. <em>The Split-Apply-Combine Strategy for Data Analysis</em>
-URL <a href="http://www.jstatsoft.org/v40/i01/paper">http://www.jstatsoft.org/v40/i01/paper</a></li>
-<li>Hadley Wickham. <em>Plyr</em>
+<li>Hadley Wickham. <em>Plyr</em>.
 URL <a href="http://plyr.had.co.nz/">http://plyr.had.co.nz/</a></li>
 </ol>
 

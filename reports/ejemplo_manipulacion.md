@@ -5,7 +5,7 @@ Los datos se leen con la función **get** de **`ProjectTemplate`**.
 
 
 ```r
-dat <- get("SIMAT.2005")
+datos <- get("SIMAT.2005")
 ```
 
 
@@ -13,7 +13,7 @@ Los datos están desorganizados: los nombres de las columnas incluyen informaci�
 
 
 ```r
-head(dat)
+head(datos)
 ```
 
 ```
@@ -102,7 +102,7 @@ Con la función **melt** de **`reshape2`** transponemos la base por mediciones y
 
 ```r
 library(reshape2)
-dat.m <- melt(dat, id.vars = c("FECHA", "HORA"))
+dat.m <- melt(datos, id.vars = c("FECHA", "HORA"))
 head(dat.m)
 ```
 
@@ -121,7 +121,7 @@ Lo que ahora interesa es la columna '_variable_', cada nombre dice la medicion q
 
 
 ```r
-# # tablecodigos, results='asis', echo = F library(xtable) codigos <-# as.character(dat.m$variable) tab.df <- data.frame(codigos) tab <-# xtable(tab.df, align = 'cc') print(tab, type='html',# html.table.attributes = 'align = 'center'', include.rownames=FALSE)
+# # tablecodigos, results='asis', echo = FALSE, message = FALSE# library(xtable) codigos <- as.character(dat.m$variable) tab.df <-# data.frame(codigos) tab <- xtable(tab.df, align = 'cc') print(tab,# type='html', html.table.attributes = 'align = 'center'',# include.rownames=FALSE)
 ```
 
 
@@ -249,11 +249,13 @@ dat.m$value <- as.numeric(dat.m$value)
 URL [http://www.johnmyleswhite.com/notebook/2010/08/26/projecttemplate/](http://www.johnmyleswhite.com/notebook/2010/08/26/projecttemplate/)
 2. Hadley Wickham. *Reshape2*.
 URL [http://had.co.nz/reshape/](http://had.co.nz/reshape/)
-3. Hadley Wickham. *stringr: modern, consistent string processing*.
+3. Hadley Wickham. *Reshaping Data with the reshape Package*.
+URL [http://www.jstatsoft.org/v21/i12/paper](http://www.jstatsoft.org/v21/i12/paper)
+4. Hadley Wickham. *stringr: modern, consistent string processing*.
 URL [http://journal.r-project.org/archive/2010-2/RJournal_2010-2_Wickham.pdf](http://journal.r-project.org/archive/2010-2/RJournal_2010-2_Wickham.pdf)
-4. Grolemund G, Wickham H. *Dates and Times Made Easy with lubridate*. Rice University.
+5. Grolemund G, Wickham H. *Dates and Times Made Easy with lubridate*. Rice University.
+URL [http://www.jstatsoft.org/v40/i03/paper](http://www.jstatsoft.org/v40/i03/paper)
+6. Hadley Wickham. *The Split-Apply-Combine Strategy for Data Analysis*.
 URL [http://www.jstatsoft.org/v40/i01/paper](http://www.jstatsoft.org/v40/i01/paper)
-5. Hadley Wickham. *The Split-Apply-Combine Strategy for Data Analysis*
-URL [http://www.jstatsoft.org/v40/i01/paper](http://www.jstatsoft.org/v40/i01/paper)
-6. Hadley Wickham. *Plyr*
+7. Hadley Wickham. *Plyr*.
 URL [http://plyr.had.co.nz/](http://plyr.had.co.nz/)
