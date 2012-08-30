@@ -1,32 +1,35 @@
 Ejemplo de Manipulación de Datos
 ===
 ## Lectura de datos y estructura
-Los datos se leen con la función **get** de **`ProjectTemplate`** y aleatoriamente se escogen cinco reglones y columnas.
+Los datos se leen con la función **get** de **`ProjectTemplate`**.
 
 ```{r getfunction}
-dat.0 <- get("SIMAT.2005")
-set.seed(858764)
-dat <- dat.0[ sample(1:nrow(dat.0), 5), c(1:2, sample(3:ncol(dat.0), 5))]
-dat
+datos <- get('SIMAT.2005')
 ```
 
-Con la función **melt** de **`reshape2`** transponemos la base por mediciones y estaciones. 
-La extracción de la base tiene dos variables: "_FECHA_" y "_HORA_". Esto funciona para tener la misma estructura en todos los años que se leyeron. 
+Los datos están desorganizados: los nombres de las columnas incluyen información acerca de las unidades de medición (estaciones), de las mediciones y de las unidades de medición:
+
+```{r }
+head(datos)
+```
+
+Con la función **melt** de **`reshape2`** transponemos la base por mediciones y estaciones. Con esto podemos crear fácilmente identificadores de mediciones y estaciones y extraer las unidades de cada medición. Adicionalmente, podremos pegar de manera segura a las tablas de otros años.  
 
 ```{r meltfunction}
 library(reshape2)
-dat.m <- melt(dat, id.vars = c("FECHA", "HORA"))
-dat.m
+dat.m <- melt(datos, id.vars = c('FECHA', 'HORA'))
+head(dat.m)
 ```
 
-Lo que ahora interesa es la columna "_variable_", cada nombre dice la medicion que se evalúa, la estación donde se evalúa y las unidades de la medición. En este caso los valores de la columna "_variable_" son los siguientes.
+Lo que ahora interesa es la columna '_variable_', cada nombre dice la medicion que se evalúa, la estación donde se evalúa y las unidades de la medición. En este caso los valores de la columna '_variable_' son los siguientes.
 
-```{r tablecodigos, results='asis', echo = F}
-library(xtable)
-codigos <- as.character(dat.m$variable)
-tab.df <- data.frame(codigos)
-tab <- xtable(tab.df, align = "cc")
-print(tab, type="html", html.table.attributes = "align = 'center'", include.rownames=FALSE)
+```{r }
+# # tablecodigos, results='asis', echo = FALSE, message = FALSE
+# library(xtable)
+# codigos <- as.character(dat.m$variable)
+# tab.df <- data.frame(codigos)
+# tab <- xtable(tab.df, align = 'cc')
+# print(tab, type='html', html.table.attributes = 'align = 'center'', include.rownames=FALSE)
 ```
 
 ****
@@ -34,89 +37,81 @@ print(tab, type="html", html.table.attributes = "align = 'center'", include.rown
 ## Creación de variables
 Con la librería **`stringr`** se manipulan los códigos para separarlos en las tres variables que interesan. 
 
-```{r }
+```{r codigos}
 library(stringr)
-codigos <- as.character(dat.m$variable)
+codigos <- dat.m$variable
 ```
 
 * **str_split_fixed** 
 
-Separa una cadena en distintas partes siguiendo un patrón, en este caso ("_"), y devuelve las nuevas cadenas en una matriz que además se puede definir la dimensión
+Separa una cadena en distintas partes siguiendo un patrón, en este caso ('_'), y devuelve las nuevas cadenas en una matriz que además se puede definir la dimensión
 
-```{r }
-codigos.sep <- str_split_fixed(codigos, '_', n = 2)
-codigos.sep
+```{r str_split_fixed}
+codigos.sep <- str_split_fixed(dat.m$variable, '_', n = 2)
+head(codigos.sep)
 ```
 
 De la matríz que se obtiene sólo se extrae la segunda columna.
 
 ```{r }
-unidades <- codigos.sep[ , 2]
+dat.m$unidades <- codigos.sep[ , 2]
 ```
 
 Sin embargo, en la primera columna todavía se necesita extraer subcadenas con un patrón determinado y obtener las dos varibles faltantes que dependen de las posiciones de los caracteres.
 * **str_sub** _(equivale a *strsub*)_
 
-Extrae una cadena de un vector siguiendo un patrón indicando las posiciones de inicio y final. Difiere en que regresa un vector de longitud cero si no existe el patrón y se puede usar signo negativo para indicar que las posiciones se invierten. 
+Extrae una subcadena indicando las posiciones (número de caracteres) de inicio y final. Las posiciones pueden ser negativas indicando que se cuenta del final hacia el principio de la cadena, y regresa una cadena vacía si no las posiciones no aparecen en la cadena.
 
 ```{r }
-estacion <- str_sub(codigos.sep[, 1], start = -3, end = -1)
+dat.m$estacion <- str_sub(codigos.sep[, 1], start = -3, end = -1)
 ```
 
-Como ninguna cadena del vector tiene más de 10 posiciones se indica este y tomar las posiciones restantes y en caso de no haber simplemente lo omite 
+Como ninguna cadena del vector tiene más de 10 posiciones las siguientes subcadenas comienzan en su primer caracter:
 
 ```{r }
-medicion <- str_sub(codigos.sep[ ,1], start = -10, end = -4)
-```
-
-Se crea un **data.frame** con las variables _estacion_, _medicion_ y _unidades_. 
-
-```{r }
-temp <- data.frame(#variable = codigos,
-  estacion = estacion,
-  medicion = medicion,
-  unidades = unidades )
-temp
-```
-
-****
-
-## Construcción de base
-Para construir la base se agregan las variables construídas a la base de datos con la función **join** del paquete **`plyr`** que une dos data frames. 
-En este caso a la base vertical (_dat.m_) le agrega las columnas de la base con las nuevas variables (_temp_) usando la columna común (_variable_) y sólo hay que especificar el tipo de union, el default es por la izquierda, es decir, para todos los valores de _dat.m_ agrega la columna.
-
-```{r joinfunction, message=FALSE}
-library(plyr)
-dat.j <- cbind(dat.m, temp)
-dat.j
+dat.m$medicion <- str_sub(codigos.sep[ ,1], start = -10, end = -4)
+head(dat.m)
 ```
 
 ****
 
 ## Formato fechas
 
-Por ultimo se preparan las fechas y se convierten en formato "POSIXlt" and "POSIXct" y en esta nueva fecha se agrega la hora del día en la que fue tomada con la funcion **strptime**.
-Una vez en este formato es muy sencillo extraer el año, mes, día y hora con la librería **`lubridate`** que tienen herramientas para manipular fechas. 
+Por ultimo se preparan las fechas y se convierten en formato 'POSIXlt'.
+Una vez en este formato es muy sencillo extraer el año, mes, día con la librería **`lubridate`** que tienen herramientas para manipular fechas. 
 
 ```{r joinfechas, message=FALSE}
 library(lubridate)
-dat.j$fecha.hora <- strptime(paste(dat.j$FECHA, dat.j$HORA - 1), format='%d/%m/%Y %H')
-dat.j$año <- year(dat.j$fecha.hora)
-dat.j$mes <- month(dat.j$fecha.hora, label = TRUE)
-dat.j$dia <- day(dat.j$fecha.hora) 
-dat.j$hora <- hour(dat.j$fecha.hora)
-dat.j$FECHA <- NULL
-head(dat.j)
+dat.m$fecha <- dmy(dat.m$FECHA)
+dat.m$año <- year(dat.m$fecha)
+dat.m$mes <- month(dat.m$fecha, label = TRUE)
+dat.m$dia <- day(dat.m$fecha) 
+dat.m$FECHA <- NULL
+head(dat.m)
+```
+
+Finalmente, falta recodificar mediciones faltantes, que en la base original están indicados de varias maneras (-999,-9.9, etc.)):
+
+```{r recodificar, message=FALSE}
+faltantes <- c('-9.9', '-99', '-99.9', '-999', 'NR')
+dat.m$value[dat.m$value %in% faltantes] <- NA
+dat.m$value <- as.numeric(dat.m$value)
 ```
 
 - - - -
 
 ## Referencias
-1. Myles, John. *Project Template*.
+1. John Myles. *Project Template*.
 URL [http://www.johnmyleswhite.com/notebook/2010/08/26/projecttemplate/](http://www.johnmyleswhite.com/notebook/2010/08/26/projecttemplate/)
-2. Grolemund G, Wickham H. *Dates and Times Made Easy with lubridate*. Rice University.
-URL [http://www.jstatsoft.org/v40/i01/paper](http://www.jstatsoft.org/v40/i01/paper).
-3. Wickham, Hadley. *The Split-Apply-Combine Strategy for Data Analysis*.
-URL [http://www.jstatsoft.org/v40/i03/paper](http://www.jstatsoft.org/v40/i03/paper) 
-4. Wickham, Hadley. *stringr: modern, consistent string processing*.
+2. Hadley Wickham. *Reshape2*.
+URL [http://had.co.nz/reshape/](http://had.co.nz/reshape/)
+3. Hadley Wickham. *Reshaping Data with the reshape Package*.
+URL [http://www.jstatsoft.org/v21/i12/paper](http://www.jstatsoft.org/v21/i12/paper)
+4. Hadley Wickham. *stringr: modern, consistent string processing*.
 URL [http://journal.r-project.org/archive/2010-2/RJournal_2010-2_Wickham.pdf](http://journal.r-project.org/archive/2010-2/RJournal_2010-2_Wickham.pdf)
+5. Grolemund G, Wickham H. *Dates and Times Made Easy with lubridate*. Rice University.
+URL [http://www.jstatsoft.org/v40/i03/paper](http://www.jstatsoft.org/v40/i03/paper)
+6. Hadley Wickham. *The Split-Apply-Combine Strategy for Data Analysis*.
+URL [http://www.jstatsoft.org/v40/i01/paper](http://www.jstatsoft.org/v40/i01/paper)
+7. Hadley Wickham. *Plyr*.
+URL [http://plyr.had.co.nz/](http://plyr.had.co.nz/)
