@@ -1,6 +1,9 @@
-# Exploración de datos de SIMAT 2000-2009
-```{r }
-setwd("../")
+
+Exploración de datos de SIMAT 2000-2009
+---------------------------------------
+
+```{r, include=FALSE }
+setwd('../')
 library(ProjectTemplate)
 load.project()
 head(dat)
@@ -62,3 +65,7 @@ ggplot(dat.c.sub, aes(x = TMP, y = O3, colour=estacion)) +
 URL [http://www.jstatsoft.org/v40/i03/paper](http://www.jstatsoft.org/v40/i03/paper) 
 * Hadley Wickham. *ggplot2: Elegant Graphics for Data Analysis (Use R!)*.
 Springer. 2009.
+```
+```
+```
+
